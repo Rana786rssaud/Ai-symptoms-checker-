@@ -36,7 +36,6 @@ An **AI symptoms checker** is an intelligent software application that analyzes 
 - Accuracy varies depending on data quality and symptom specificity.
 - Risk of false positives or negatives, especially with vague symptoms.
 
----
 
 
 
