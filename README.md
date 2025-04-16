@@ -38,26 +38,12 @@ An **AI symptoms checker** is an intelligent software application that analyzes 
 
 ---
 
-Would you like a visual chart showing how an AI symptoms checker works?
+
 
 ---
 
-Would you like to upload data or explore how to visualize symptom checker outputs (e.g., symptom frequency, condition likelihood, or response paths)?
 
 ---
 
-### Possible follow-up questions you might ask:
-1. How does the AI in a symptoms checker actually work?
-2. What are the best chart types to visualize symptom checker outputs?
-3. Can you compare different AI symptoms checkers?
-4. How accurate are AI symptoms checkers compared to doctors?
-5. What data does a symptom checker usually collect?
-6. Can I create my own simple AI symptom checker?
-7. How do symptom checkers handle overlapping symptoms?
 
----
 
-### 💡 Chart Tip of the Response:
-**Use flowcharts** to represent decision paths in AI symptom checkers—they help users understand how the system moves from input to output step-by-step.
-
-Let me know how you'd like to proceed or if you’d like to visualize anything!
