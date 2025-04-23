@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Symptom Checker</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #2e59d9;
+            --text-color: #5a5c69;
+            --light-color: #ffffff;
+        }
+        
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fc;
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-container {
+            max-width: 800px;
+            margin: auto;
+            background-color: var(--light-color);
+            border-radius: 15px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            overflow: hidden;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .chat-header h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .chat-header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            background-color: var(--secondary-color);
+        }
+        
+        .message {
+            margin-bottom: 1.5rem;
+            max-width: 80%;
+        }
+        
+        .user-message {
+            margin-left: auto;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 18px 18px 0 18px;
+            padding: 0.75rem 1.25rem;
+        }
+        
+        .bot-message {
+            margin-right: auto;
+            background-color: white;
+            color: var(--text-color);
+            border-radius: 18px 18px 18px 0;
+            padding: 0.75rem 1.25rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        
+        .chat-input-container {
+            padding: 1rem;
+            background-color: white;
+            border-top: 1px solid #e3e6f0;
+        }
+        
+        .chat-input {
+            display: flex;
+            align-items: center;
+        }
+        
+        #user-input {
+            flex: 1;
+            border-radius: 25px;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid #d1d3e2;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        #user-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        
+        #send-btn {
+            margin-left: 0.75rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        #send-btn:hover {
+            background-color: var(--accent-color);
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 0.75rem 1.25rem;
+            background-color: white;
+            border-radius: 18px 18px 18px 0;
+            margin-bottom: 1.5rem;
+            width: fit-content;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 0 2px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typingAnimation {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .disclaimer {
+            font-size: 0.75rem;
+            color: #858796;
+            text-align: center;
+            padding: 0.5rem 1.5rem;
+            background-color: var(--secondary-color);
+            border-top: 1px solid #e3e6f0;
+        }
+        
+        @media (max-width: 768px) {
+            .chat-container {
+                height: 90vh;
+                border-radius: 0;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid h-100">
+        <div class="row h-100 justify-content-center align-items-center">
+            <div class="col-12 col-lg-8">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h2><i class="fas fa-robot me-2"></i>AI Symptom Checker</h2>
+                        <p>Describe your symptoms and get preliminary health information</p>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message bot-message">
+                            Hello! I'm your AI Symptom Checker. Please describe any symptoms you're experiencing, such as:
+                            <ul class="mt-2 mb-0">
+                                <li>Type of symptom (headache, fever, etc.)</li>
+                                <li>Duration (how long you've had it)</li>
+                                <li>Severity (mild, moderate, severe)</li>
+                                <li>Any other relevant details</li>
+                            </ul>
+                            <p class="mt-2 mb-0"><small>Remember, I'm not a doctor but I can provide helpful information.</small></p>
+                        </div>
+                        
+                        <div class="typing-indicator" id="typing-indicator">
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="disclaimer">
+                        <strong>Disclaimer:</strong> This AI is not a substitute for professional medical advice. Always consult a healthcare provider for proper diagnosis and treatment.
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <div class="chat-input">
+                            <input type="text" id="user-input" class="form-control" placeholder="Describe your symptoms here..." autocomplete="off">
+                            <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userInput = document.getElementById('user-input');
+            const sendBtn = document.getElementById('send-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            const typingIndicator = document.getElementById('typing-indicator');
+            
+            // Sample responses for different symptoms
+            const symptomResponses = {
+                'headache': "Headaches can have many causes, from tension to migraines. If it's severe or accompanied by vision changes, vomiting, or confusion, seek medical attention immediately. For mild headaches, rest, hydration, and over-the-counter pain relievers may help.",
+                'fever': "Fever is often a sign of infection. For adults, if your temperature is above 103°F (39.4°C) or lasts more than 3 days, consult a doctor. Stay hydrated and rest. For children, seek medical advice for fevers above 100.4°F (38°C) in infants or persistent fevers.",
+                'cough': "Coughs can be due to colds, allergies, or more serious conditions. If your cough persists more than 3 weeks, produces blood, or is accompanied by fever and difficulty breathing, see a doctor. Stay hydrated and consider cough drops for temporary relief.",
+                'stomach pain': "Stomach pain can range from indigestion to serious conditions. If pain is severe, persistent, or accompanied by vomiting blood, black stools, or fever, seek immediate care. For mild cases, try rest, hydration, and bland foods.",
+                'fatigue': "Persistent fatigue could indicate various conditions including anemia, thyroid issues, or sleep disorders. If accompanied by other symptoms like weight changes, fever, or depression, consult a doctor. Ensure you're getting adequate sleep, nutrition, and exercise."
+            };
+            
+            // Common conditions and their responses
+            const conditionResponses = {
+                'cold': "Common cold symptoms include runny nose, sore throat, and mild cough. Rest, fluids, and over-the-counter medications can help. Symptoms typically last 7-10 days. See a doctor if symptoms worsen or persist beyond 2 weeks.",
+                'flu': "Influenza often includes fever, body aches, fatigue, and respiratory symptoms. Rest, fluids, and antiviral medications (if prescribed) can help. Seek medical attention for difficulty breathing, persistent fever, or severe symptoms.",
+                'allergies': "Allergy symptoms may include sneezing, itchy eyes, and runny nose. Antihistamines and avoiding triggers can help. If symptoms are severe or include difficulty breathing, seek medical care immediately.",
+                'anxiety': "Anxiety can cause physical symptoms like rapid heartbeat, sweating, and digestive issues. Relaxation techniques, exercise, and professional counseling can help. If symptoms are severe or include thoughts of self-harm, seek immediate help."
+            };
+            
+            // Send message function
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (message === '') return;
+                
+                // Add user message to chat
+                addMessage(message, 'user');
+                userInput.value = '';
+                
+                // Show typing indicator
+                typingIndicator.style.display = 'block';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Simulate AI thinking
+                setTimeout(() => {
+                    typingIndicator.style.display = 'none';
+                    
+                    // Generate AI response
+                    const aiResponse = generateAIResponse(message);
+                    addMessage(aiResponse, 'bot');
+                }, 1500);
+            }
+            
+            // Add message to chat
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                messageDiv.textContent = text;
+                chatMessages.insertBefore(messageDiv, typingIndicator);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Generate AI response based on user input
+            function generateAIResponse(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                // Check for specific symptoms
+                for (const symptom in symptomResponses) {
+                    if (lowerMessage.includes(symptom)) {
+                        return symptomResponses[symptom];
+                    }
+                }
+                
+                // Check for common conditions
+                for (const condition in conditionResponses) {
+                    if (lowerMessage.includes(condition)) {
+                        return conditionResponses[condition];
+                    }
+                }
+                
+                // Check for emergency keywords
+                const emergencyKeywords = ['chest pain', 'difficulty breathing', 'severe pain', 'bleeding', 'unconscious', 'fainting'];
+                for (const keyword of emergencyKeywords) {
+                    if (lowerMessage.includes(keyword)) {
+                        return "Based on your description, this may be a medical emergency. Please call emergency services or go to the nearest hospital immediately.";
+                    }
+                }
+                
+                // Default response if no specific symptom is recognized
+                return "Thank you for describing your symptoms. While I can't diagnose you, I recommend monitoring your symptoms. If they persist, worsen, or you develop new concerning symptoms, please consult a healthcare professional. Would you like me to provide general information about any specific symptom?";
+            }
+            
+            // Event listeners
+            sendBtn.addEventListener('click', sendMessage);
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
