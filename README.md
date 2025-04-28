@@ -20,8 +20,22 @@ An **AI symptoms checker** is an intelligent software application that analyzes 
 - **Privacy Protections:** Often anonymizes user data to ensure confidentiality.
 
 ---
+###Team Name : Tech Industry 
+Riya Jayswal :KU2407U182 
+Dharmik Patel:KU2407U848
+Tejas jain :KU2407U216 
 
-### 🩺 Use Cases:
+###Team contributor name in this project 
+1. Riya jaysawal : Research , Data set { kaggle}, PPT
+2. Dharmik patel : Research, PPT, Interface designing
+3. Tejas jain : Tech department , coder handler
+
+
+
+
+
+
+### 🩺 Use Cases: 
 
 - **Pre-diagnosis support** before visiting a doctor.
 - **Triage assistance** to determine urgency.
